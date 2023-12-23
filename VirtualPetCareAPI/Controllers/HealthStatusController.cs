@@ -18,9 +18,9 @@ public class HealthStatusController : ControllerBase
 
     [HttpGet]
     [Route("{PetId}")] // /api/statuses/PetId
-    public IActionResult GetById(int PetId)
+    public async Task<IActionResult> GetById(int PetId)
     {
-        var healthStatus =  _db.HealthStatuses.Where(x => x.PetId == PetId).FirstOrDefault(); // First'de garanti deger olmali, FirstOrDefault ile yoksa null doner
+        var healthStatus = await _db.HealthStatuses.Where(x => x.PetId == PetId).Select(x => new { x.PetId, x.Name }).FirstOrDefaultAsync();
 
         if (healthStatus is null) return NotFound(); // 404
         return Ok(healthStatus); // 200

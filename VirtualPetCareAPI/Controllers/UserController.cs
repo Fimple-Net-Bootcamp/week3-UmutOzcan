@@ -21,19 +21,20 @@ public class UserController : ControllerBase
         _db.Users.Add(user);
         await _db.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetById), new { id= user.UserId }, user ); // olusturulan kaynagin bilgilerini donder 201
+        return CreatedAtAction(nameof(GetById), new { id = user.UserId }, user); // olusturulan kaynagin bilgilerini donder 201
     }
 
+    // lazy loading açýk include gerek yok
     [HttpGet]
     [Route("{id}")] // /api/users/id
     public async Task<IActionResult> GetById(int id)
     {
-        var user = await _db.Users
-            .Include(u => u.Pets)
-            .Where(x => x.UserId == id)
-            .FirstOrDefaultAsync(); // First'de garanti deger olmali, FirstOrDefault ile yoksa null doner
+        var user = await _db.Users.Where(x => x.UserId == id)
+            .Select(x => new { x.UserName, x.Pets })
+            .FirstOrDefaultAsync();
 
-        if(user is null) return NotFound(); // 404
+        if (user is null) return NotFound(); // 404
         return Ok(user); // 200
     }
 }
+

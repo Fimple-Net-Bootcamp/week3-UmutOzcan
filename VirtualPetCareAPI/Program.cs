@@ -7,11 +7,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<VirtualPetCareDbContext>(options => 
                                                        options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
-builder.Services.AddControllersWithViews()
-    .AddNewtonsoftJson(options =>
-    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-);
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
